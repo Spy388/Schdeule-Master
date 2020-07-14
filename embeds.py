@@ -9,8 +9,8 @@ db = Database()
 
 def add_embed_footer(embed):
     embed.set_footer(
-        text="Scrims scheduler bot by BlueX | VPS time: " + datetime.now().strftime("%a, %d %b %Y %H:%M:%S"),
-        icon_url="http://patrikpapso.com/images/avatar-128x128.png",
+        text="Person299 Tournaments bot by spyagent388, SC by BlueX | VPS time: " + datetime.now().strftime("%a, %d %b %Y %H:%M:%S"),
+        icon_url="https://tr.rbxcdn.com/787ac2e95a24f5056a19c935312442e5/150/150/AvatarHeadshot/Png",
     )
 
 
@@ -34,7 +34,7 @@ def Error(title, description):
 
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 def get_schedule_embed(start_date, end_date, server_id, server_timezone):
-    
+
     fmt_date = "%Y-%m-%d"
     # server timezone
     server_tz = timezone(server_timezone)
@@ -44,7 +44,7 @@ def get_schedule_embed(start_date, end_date, server_id, server_timezone):
     #print("Server timezone")
     #print(start_date.astimezone(server_tz))
 
-    
+
     start_date_fmt = start_date.astimezone(server_tz).strftime(fmt_date)
     end_date_fmt = end_date.astimezone(server_tz).strftime(fmt_date)
 
@@ -59,14 +59,14 @@ def get_schedule_embed(start_date, end_date, server_id, server_timezone):
                                             filter(Scrims.date.between(start_date_fmt, end_date_fmt)).\
                                             order_by(Scrims.time_start).all()
         session.expunge_all()
-    # create schedule embed 
+    # create schedule embed
     embed = discord.Embed(
-        title="SCRIMS SCHEDULE {} - {}".format(start_date_fmt, end_date_fmt),
+        title="TOURNAMENT SCHEDULE {} - {}".format(start_date_fmt, end_date_fmt),
         color=0x007BFF,
     )
     embed.set_thumbnail(url="http://patrikpapso.com/images/schedule.png")
     add_embed_footer(embed)
-    
+
     delta = end_date - start_date
     number_of_days = delta.days
     schedule = [[] for day in range(0, number_of_days + 1)]
@@ -78,7 +78,7 @@ def get_schedule_embed(start_date, end_date, server_id, server_timezone):
         else:
             index = (sd["date"].timetuple().tm_yday - 1) - (start_date.timetuple().tm_yday - 1)
         schedule[index].append(sd)
-    
+
     # timezone formating stuff
     utc_tz = timezone("UTC")
     fmt_date_scrim = "%d.%m.%Y"
@@ -95,21 +95,21 @@ def get_schedule_embed(start_date, end_date, server_id, server_timezone):
                 time_start_server = scrim["time_start"].astimezone(server_tz)
                 time_end_server = scrim["time_end"].astimezone(server_tz)
                 if datetime_now_tz.date() > scrim["date"]:
-                    day_string += "~~({}) {} - {} against {}~~\n".format(
+                    day_string += "~~({}) {} - {} TOURNAMENT {}~~\n".format(
                         id,
                         time_start_server.strftime(fmt),
                         time_end_server.strftime(fmt),
                         scrim["enemy_team"],
                     )
                 else:
-                    day_string += "`({}) {} - {} against {}`\n".format(
+                    day_string += "`({}) {} - {} TOURNAMENT {}`\n".format(
                         scrim["id"],
                         time_start_server.strftime(fmt),
                         time_end_server.strftime(fmt),
                         scrim["enemy_team"],
                     )
         else:
-            day_string = "NO SCRIMS SCHEDULED"
+            day_string = "NO TOURNAMENTS SCHEDULED"
         embed.add_field(
             name=":calendar: **{}** ({})".format(
                 days[day_date.weekday()], day_date.strftime(fmt_date_scrim)
